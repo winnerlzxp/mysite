@@ -1,0 +1,52 @@
+{% extends 'form.html' %}
+{% block head_extends %}
+<script type="text/javascript">
+    $(function(){
+        var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+        $('#send_code').click(function(){
+            var email = $('#id_email');
+            if($.trim(email.val()) == ''){
+                email.focus();
+                layer.tips('请输入邮箱地址', '#id_email');
+                return false;
+            }
+            if(!reg.test(email.val())){
+                email.focus();
+                email.select();
+                layer.tips('邮箱地址格式不正确！', '#id_email');
+                return false;
+            }
+            // 发送验证码
+            $.ajax({
+                url:"{% url 'send_verify_code' %}",
+                type:'GET',
+                data:{'email':email.val(), 'send_for':'bind_email_code'},
+                cache:false,
+                success:function(data){
+                    if(data.status == 'ERROR'){
+                        layer.msg(data.status)
+                    }
+                },
+            });
+            $(this).addClass("disabled");
+            $(this).attr('disabled', true);
+            var time = 60;
+            $(this).text(time + 's');
+            var interval = setInterval(() => {
+                if(time <=0){
+                    clearInterval(interval);
+                    $(this).removeClass("disabled");
+                    $(this).attr('disabled', false);
+                    $(this).text('发送验证码');
+                    return false;
+                }
+                time --;
+                $(this).text(time + 's');
+            }, 1000);
+        });
+    });
+</script>
+{% endblock %}
+{% block other_button %}
+<button id="send_code" type="button" class="btn btn-primary">发送验证码</button>
+{% endblock %}

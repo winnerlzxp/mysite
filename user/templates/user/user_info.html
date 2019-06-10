@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}我的网站|个人资料{% endblock %}
+{% block nav_home_active %}active{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            {% if user.is_authenticated %}
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ user.username }}</div>
+                <div class="panel-body">
+                    <ul class="list-unstyled">
+                        <li>昵称：{{ user.get_nikename }} <a href="{% url 'edit_nickname' %}?from = {{ request.get_full_path }}">修改昵称</a></li>
+                        <li>邮箱：{% if user.email %}{{ user.email }}{% else %}<a href="{% url 'bind_email' %}">绑定邮箱</a>{% endif %}</li>
+                        <li>上次登录时间：{{ user.last_login|date:'Y-m-d H:i:s' }}</li>
+                        <li><a href="{% url 'edit_pass' %}">修改密码</a></li>
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <script type="text/javascript">
+                window.location.href = '/';
+            </script>
+            {% endif %}
+        </div>
+    </row>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block nav_home_active %}active{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-4 col-xs-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h3 class="panel-title">{{ form_title }}</h3></div>
+                <div class="panel-body">
+                    <form id="" action="" method="POST">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        {% if not field.is_hidden %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% endif %}
+                        {{ field }}
+                        <p class="text-danger">{{ field.errors.as_text }}</p>
+                        {% endfor %}
+                        <span class="pull-left text-danger">{{ form.non_field_errors }}</span>
+                        <span class="pull-left">{% block other_button %}{% endblock %}</span>
+                        <div class="pull-right">
+                        <button type="submit" class="btn btn-primary">{{ submit_text }}</button>
+                        <button type="button" class="btn btn-primary"  onclick="javascript:back(-1);">返回</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
